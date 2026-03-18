@@ -18,7 +18,7 @@ import logging
 import signal
 import numpy as np
 import websockets
-from websockets.server import WebSocketServerProtocol
+from websockets import ServerConnection as WebSocketServerProtocol
 
 from preprocessing import SensorFrame, SensorWindow
 from inference_engine import InferenceEngine
@@ -122,8 +122,14 @@ async def main(args):
     # Graceful shutdown on Ctrl+C
     stop_event = asyncio.Event()
     loop = asyncio.get_running_loop()
-    loop.add_signal_handler(signal.SIGINT,  stop_event.set)
-    loop.add_signal_handler(signal.SIGTERM, stop_event.set)
+    try:
+        # Unix only
+        loop.add_signal_handler(signal.SIGINT,  stop_event.set)
+        loop.add_signal_handler(signal.SIGTERM, stop_event.set)
+    except NotImplementedError:
+        # Windows fallback
+        signal.signal(signal.SIGINT,  lambda s, f: loop.call_soon_threadsafe(stop_event.set))
+        signal.signal(signal.SIGTERM, lambda s, f: loop.call_soon_threadsafe(stop_event.set))
 
     log.info(f"Starting WebSocket server on ws://{args.host}:{args.port}")
     log.info("Waiting for HoloLens connection...")

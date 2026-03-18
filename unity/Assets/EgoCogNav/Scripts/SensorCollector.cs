@@ -15,11 +15,6 @@ using UnityEngine;
 using UnityEngine.XR;
 using System.Collections.Generic;
 
-#if UNITY_WSA
-using Microsoft.MixedReality.Toolkit;
-using Microsoft.MixedReality.Toolkit.Input;
-#endif
-
 namespace EgoCogNav
 {
     /// <summary>One timestep of raw HoloLens sensor data.</summary>
@@ -55,8 +50,10 @@ namespace EgoCogNav
 
         // ── State ─────────────────────────────────────────────────────────────
         private InputDevice headDevice;
+        private InputDevice eyeDevice;
         private Camera mainCamera;
         private bool deviceFound = false;
+        private bool eyeDeviceFound = false;
 
         // ─────────────────────────────────────────────────────────────────────
 
@@ -64,6 +61,7 @@ namespace EgoCogNav
         {
             mainCamera = Camera.main;
             TryFindHeadDevice();
+            TryFindEyeDevice();
             StartCoroutine(SampleLoop());
         }
 
@@ -136,25 +134,47 @@ namespace EgoCogNav
             OnNewFrame?.Invoke(frame);
         }
 
+        private void TryFindEyeDevice()
+        {
+            var devices = new List<InputDevice>();
+            InputDevices.GetDevicesWithCharacteristics(
+                InputDeviceCharacteristics.EyeTracking, devices);
+
+            if (devices.Count > 0)
+            {
+                eyeDevice = devices[0];
+                eyeDeviceFound = true;
+                Debug.Log($"[SensorCollector] Found eye tracking device: {eyeDevice.name}");
+            }
+            else
+            {
+                Debug.LogWarning("[SensorCollector] No eye tracking device found. Using gaze center fallback.");
+            }
+        }
+
         private Vector2 GetGaze()
         {
-#if UNITY_WSA
-            if (CoreServices.InputSystem?.GazeProvider != null)
+            if (!eyeDeviceFound || !eyeDevice.isValid)
             {
-                var gazeProvider = CoreServices.InputSystem.GazeProvider;
-                if (gazeProvider.IsEyeTrackingEnabled && gazeProvider.IsEyeTrackingDataValid)
+                TryFindEyeDevice();
+                return gazeCenter;
+            }
+
+            if (eyeDevice.TryGetFeatureValue(CommonUsages.eyesData, out Eyes eyes))
+            {
+                if (eyes.TryGetFixationPoint(out Vector3 fixationPoint))
                 {
-                    // Project 3D gaze direction to screen UV
-                    Vector3 gazeDir    = gazeProvider.GazeDirection;
-                    Vector3 hitPoint   = mainCamera.transform.position + gazeDir * 2f;
-                    Vector3 screenPos  = mainCamera.WorldToViewportPoint(hitPoint);
-                    return new Vector2(
-                        Mathf.Clamp01(screenPos.x),
-                        Mathf.Clamp01(screenPos.y)
-                    );
+                    Vector3 screenPos = mainCamera.WorldToViewportPoint(fixationPoint);
+                    if (screenPos.z > 0f)
+                    {
+                        return new Vector2(
+                            Mathf.Clamp01(screenPos.x),
+                            Mathf.Clamp01(screenPos.y)
+                        );
+                    }
                 }
             }
-#endif
+
             return gazeCenter; // fallback: screen center
         }
     }

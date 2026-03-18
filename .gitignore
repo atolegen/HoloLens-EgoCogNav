@@ -15,6 +15,14 @@ unity/[Bb]uilds/
 unity/[Ll]ogs/
 unity/[Uu]ser[Ss]ettings/
 unity/.vs/
+unity/app/
+unity/Packages/MixedReality/
+unity/Packages/manifest.json.backup*
+unity/Packages/packages-lock.json
+unity/Assets/WSATestCertificate.pfx
+unity/Assets/WSATestCertificate.pfx.meta
+unity/Assets/MRTK.Generated/
+unity/Assets/MRTK.Generated.meta
 
 # OS
 .DS_Store
