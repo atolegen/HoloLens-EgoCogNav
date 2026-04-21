@@ -10,18 +10,17 @@
   ],
   "dependencies": {
     "com.endel.nativewebsocket": "1.1.4",
-    "com.microsoft.mixedreality.openxr": "file:MixedReality/com.microsoft.mixedreality.openxr-1.10.0.tgz",
+    "com.microsoft.mixedreality.openxr": "file:MixedReality/com.microsoft.mixedreality.openxr-1.11.2.tgz",
     "com.microsoft.mrtk.graphicstools.unity": "file:MixedReality/com.microsoft.mrtk.graphicstools.unity-0.7.1.tgz",
+    "com.microsoft.mrtk.tts.windows": "file:MixedReality/com.microsoft.mrtk.tts.windows-1.0.4.tgz",
     "com.unity.cloud.gltfast": "6.4.0",
     "com.unity.ide.visualstudio": "2.0.22",
     "com.unity.inputsystem": "1.14.0",
     "com.unity.textmeshpro": "3.0.7",
     "com.unity.ugui": "1.0.0",
+    "com.unity.xr.arfoundation": "5.2.2",
     "com.unity.xr.management": "4.4.0",
     "com.unity.xr.openxr": "1.14.3",
-    "com.unity.modules.animation": "1.0.0",
-    "com.unity.modules.xr": "1.0.0",
-    "com.microsoft.mrtk.tts.windows": "file:MixedReality/com.microsoft.mrtk.tts.windows-1.0.4.tgz",
     "org.mixedrealitytoolkit.accessibility": "file:MixedReality/org.mixedrealitytoolkit.accessibility-1.0.3-pre.20.tgz",
     "org.mixedrealitytoolkit.audio": "file:MixedReality/org.mixedrealitytoolkit.audio-3.0.4.tgz",
     "org.mixedrealitytoolkit.core": "file:MixedReality/org.mixedrealitytoolkit.core-4.0.0-pre.1.tgz",
@@ -34,6 +33,9 @@
     "org.mixedrealitytoolkit.uxcomponents": "file:MixedReality/org.mixedrealitytoolkit.uxcomponents-4.0.0-pre.1.tgz",
     "org.mixedrealitytoolkit.uxcomponents.noncanvas": "file:MixedReality/org.mixedrealitytoolkit.uxcomponents.noncanvas-4.0.0-pre.1.tgz",
     "org.mixedrealitytoolkit.uxcore": "file:MixedReality/org.mixedrealitytoolkit.uxcore-4.0.0-pre.1.tgz",
-    "org.mixedrealitytoolkit.windowsspeech": "file:MixedReality/org.mixedrealitytoolkit.windowsspeech-3.0.3.tgz"
+    "org.mixedrealitytoolkit.windowsspeech": "file:MixedReality/org.mixedrealitytoolkit.windowsspeech-3.0.3.tgz",
+    "com.unity.modules.animation": "1.0.0",
+    "com.unity.modules.assetbundle": "1.0.0",
+    "com.unity.modules.xr": "1.0.0"
   }
 }

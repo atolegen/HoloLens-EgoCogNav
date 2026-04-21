@@ -24,6 +24,9 @@ unity/Assets/WSATestCertificate.pfx.meta
 unity/Assets/MRTK.Generated/
 unity/Assets/MRTK.Generated.meta
 
+# HoloLens build output (large binaries)
+unity/demoapp/
+
 # OS
 .DS_Store
 Thumbs.db
