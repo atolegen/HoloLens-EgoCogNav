@@ -28,6 +28,7 @@ using UnityEngine.XR.ARSubsystems;
 using TMPro;
 using MixedReality.Toolkit;
 using MixedReality.Toolkit.Subsystems;
+using UnityEngine.XR.Hands;
 
 #if !UNITY_EDITOR
 using Microsoft.MixedReality.OpenXR;
@@ -939,14 +940,34 @@ namespace EgoCogNav.Demo
         private bool IsHandRaised(UnityEngine.XR.XRNode hand)
         {
             if (Camera.main == null) return false;
+            float threshold = Camera.main.transform.position.y + 0.15f;
+
+            // Primary: MRTK3 HandsAggregatorSubsystem (works in Holographic Remoting)
             try
             {
                 var sub = XRSubsystemHelpers.GetFirstRunningSubsystem<HandsAggregatorSubsystem>();
-                if (sub == null) return false;
-                if (!sub.TryGetJoint(TrackedHandJoint.Wrist, hand, out HandJointPose wrist)) return false;
-                return wrist.Position.y > Camera.main.transform.position.y + 0.15f;
+                if (sub != null && sub.TryGetJoint(TrackedHandJoint.Wrist, hand, out HandJointPose wrist))
+                    return wrist.Position.y > threshold;
             }
-            catch { return false; }
+            catch { }
+
+            // Fallback: raw XRHandSubsystem (reliable on deployed device)
+            try
+            {
+                var subs = new List<XRHandSubsystem>();
+                SubsystemManager.GetSubsystems(subs);
+                if (subs.Count > 0)
+                {
+                    XRHand xrHand = hand == UnityEngine.XR.XRNode.RightHand
+                        ? subs[0].rightHand : subs[0].leftHand;
+                    if (xrHand.isTracked &&
+                        xrHand.GetJoint(XRHandJointID.Wrist).TryGetPose(out Pose pose))
+                        return pose.position.y > threshold;
+                }
+            }
+            catch { }
+
+            return false;
         }
 
         private void ToggleHUD()
